@@ -319,77 +319,72 @@ void bmp24_brightness(t_bmp24 *img, int value) {
     }
 }
 
-// Convolution filter functions
-t_pixel bmp24_convolution(t_bmp24 *img, int x, int y, float **kernel, int kernelSize) {
-    t_pixel result = {0, 0, 0};
-    float red_sum = 0.0f, green_sum = 0.0f, blue_sum = 0.0f;
-    int half = kernelSize / 2;
-    
-    for (int ky = 0; ky < kernelSize; ky++) {
-        for (int kx = 0; kx < kernelSize; kx++) {
-            // Calculate image coordinates to sample
-            int imgX = x + (kx - half);
-            int imgY = y + (ky - half);
-            
-            // Handle boundary conditions - clamp to edge
-            if (imgX < 0) imgX = 0;
-            if (imgY < 0) imgY = 0;
-            if (imgX >= img->width) imgX = img->width - 1;
-            if (imgY >= img->height) imgY = img->height - 1;
-            
-            // Apply kernel weight to pixel values
-            float weight = kernel[ky][kx];
-            red_sum += (float)img->data[imgY][imgX].red * weight;
-            green_sum += (float)img->data[imgY][imgX].green * weight;
-            blue_sum += (float)img->data[imgY][imgX].blue * weight;
-        }
-    }
-    
-    // Clamp results to 0-255 range
-    if (red_sum > 255.0f) red_sum = 255.0f;
-    if (red_sum < 0.0f) red_sum = 0.0f;
-    if (green_sum > 255.0f) green_sum = 255.0f;
-    if (green_sum < 0.0f) green_sum = 0.0f;
-    if (blue_sum > 255.0f) blue_sum = 255.0f;
-    if (blue_sum < 0.0f) blue_sum = 0.0f;
-    
-    result.red = (uint8_t)red_sum;
-    result.green = (uint8_t)green_sum;
-    result.blue = (uint8_t)blue_sum;
-    
-    return result;
-}
+// Convolution filter functions - FIXED IMPLEMENTATION
 
-// Apply convolution filter to the entire image
+// FIXED: Completely rewritten convolution filter application
 void bmp24_applyFilter(t_bmp24 *img, float **kernel, int kernelSize) {
     if (img == NULL || img->data == NULL || kernel == NULL) return;
     
-    // Create temporary buffer for the processed image
-    t_pixel **temp = bmp24_allocateDataPixels(img->width, img->height);
-    if (temp == NULL) {
+    int width = img->width;
+    int height = img->height;
+    int n = kernelSize / 2;
+    
+    // Create a temporary copy of the image data
+    t_pixel **tempData = bmp24_allocateDataPixels(width, height);
+    if (tempData == NULL) {
         fprintf(stderr, "Failed to allocate memory for image processing\n");
         return;
     }
     
-    // Process each pixel with the convolution
-    for (int y = 0; y < img->height; y++) {
-        for (int x = 0; x < img->width; x++) {
-            temp[y][x] = bmp24_convolution(img, x, y, kernel, kernelSize);
+    // Copy original data to temp buffer
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            tempData[y][x] = img->data[y][x];
         }
     }
     
-    // Copy processed pixels back to the original image
-    for (int y = 0; y < img->height; y++) {
-        for (int x = 0; x < img->width; x++) {
-            img->data[y][x] = temp[y][x];
+    // Apply convolution to each pixel
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            float red_sum = 0.0f;
+            float green_sum = 0.0f;
+            float blue_sum = 0.0f;
+            
+            // Apply convolution kernel
+            for (int ky = -n; ky <= n; ky++) {
+                for (int kx = -n; kx <= n; kx++) {
+                    // Calculate source pixel coordinates with boundary checking
+                    int sy = y + ky;
+                    int sx = x + kx;
+                    
+                    // Handle boundary conditions - clamp to edge
+                    if (sy < 0) sy = 0;
+                    if (sx < 0) sx = 0;
+                    if (sy >= height) sy = height - 1;
+                    if (sx >= width) sx = width - 1;
+                    
+                    // Get kernel weight
+                    float weight = kernel[ky + n][kx + n];
+                    
+                    // Apply kernel weight to each color channel
+                    red_sum += tempData[sy][sx].red * weight;
+                    green_sum += tempData[sy][sx].green * weight;
+                    blue_sum += tempData[sy][sx].blue * weight;
+                }
+            }
+            
+            // Clamp results to 0-255 range
+            img->data[y][x].red   = (red_sum > 255.0f)   ? 255 : (red_sum < 0.0f)   ? 0 : (uint8_t)red_sum;
+            img->data[y][x].green = (green_sum > 255.0f) ? 255 : (green_sum < 0.0f) ? 0 : (uint8_t)green_sum;
+            img->data[y][x].blue  = (blue_sum > 255.0f)  ? 255 : (blue_sum < 0.0f)  ? 0 : (uint8_t)blue_sum;
         }
     }
     
-    // Free temporary buffer
-    bmp24_freeDataPixels(temp, img->height);
+    // Free temporary data
+    bmp24_freeDataPixels(tempData, height);
 }
 
-// Specific filter implementations
+// Specific filter implementations - update box blur for better results
 void bmp24_boxBlur(t_bmp24 *img) {
     int kernelSize = 3;
     float **kernel = (float **)malloc(kernelSize * sizeof(float *));
@@ -518,4 +513,26 @@ void bmp24_sharpen(t_bmp24 *img) {
         free(kernel[i]);
     }
     free(kernel);
+}
+
+// Update the copy function implementation
+t_bmp24 * bmp24_copy(t_bmp24 * src) {
+    if (src == NULL) return NULL;
+    
+    // Allocate a new image with the same dimensions
+    t_bmp24 *dst = bmp24_allocate(src->width, src->height, src->colorDepth);
+    if (dst == NULL) return NULL;
+    
+    // Copy header information
+    dst->header = src->header;
+    dst->header_info = src->header_info;
+    
+    // Copy pixel data
+    for (int y = 0; y < src->height; y++) {
+        for (int x = 0; x < src->width; x++) {
+            dst->data[y][x] = src->data[y][x];
+        }
+    }
+    
+    return dst;
 }

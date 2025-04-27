@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "bmp8.h"
 #include "bmp24.h"
+#include <math.h>
 
 // Function to create a synthetic test image
 t_bmp24* create_test_image(int width, int height) {
@@ -30,13 +31,88 @@ t_bmp24* create_test_image(int width, int height) {
     img->header_info.ncolors = 0;
     img->header_info.importantcolors = 0;
     
-    // Create a gradient pattern
+    // First, fill the whole image with a gradient background
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            // Create gradient pattern with proper floating-point division
-            img->data[y][x].red = (uint8_t)(((float)x / (float)width) * 255.0f);
-            img->data[y][x].green = (uint8_t)(((float)y / (float)height) * 255.0f);
-            img->data[y][x].blue = (uint8_t)(((float)(x + y) / (float)(width + height)) * 255.0f);
+            // Create a subtle gradient for background
+            img->data[y][x].red = (uint8_t)(((float)x / (float)width) * 150.0f + 50);
+            img->data[y][x].green = (uint8_t)(((float)y / (float)height) * 150.0f + 50);
+            img->data[y][x].blue = 200;
+        }
+    }
+    
+    // Draw some geometric shapes for better filter visibility
+    
+    // 1. Draw a white square in the center
+    int square_size = width / 4;
+    int square_x = width / 2 - square_size / 2;
+    int square_y = height / 2 - square_size / 2;
+    
+    for (int y = square_y; y < square_y + square_size; y++) {
+        for (int x = square_x; x < square_x + square_size; x++) {
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                img->data[y][x].red = 255;
+                img->data[y][x].green = 255;
+                img->data[y][x].blue = 255;
+            }
+        }
+    }
+    
+    // 2. Draw a red circle in the top left
+    int circle_radius = width / 8;
+    int circle_x = width / 4;
+    int circle_y = height / 4;
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Calculate distance from center of circle
+            float dx = x - circle_x;
+            float dy = y - circle_y;
+            float distance = sqrt(dx*dx + dy*dy);
+            
+            if (distance < circle_radius) {
+                img->data[y][x].red = 255;
+                img->data[y][x].green = 0;
+                img->data[y][x].blue = 0;
+            }
+        }
+    }
+    
+    // 3. Draw a green circle in the bottom right
+    circle_x = 3 * width / 4;
+    circle_y = 3 * height / 4;
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Calculate distance from center of circle
+            float dx = x - circle_x;
+            float dy = y - circle_y;
+            float distance = sqrt(dx*dx + dy*dy);
+            
+            if (distance < circle_radius) {
+                img->data[y][x].red = 0;
+                img->data[y][x].green = 255;
+                img->data[y][x].blue = 0;
+            }
+        }
+    }
+    
+    // 4. Draw some lines for edge detection tests
+    for (int i = 0; i < width; i++) {
+        int y = height / 3;
+        if (i >= 0 && i < width && y >= 0 && y < height) {
+            img->data[y][i].red = 0;
+            img->data[y][i].green = 0;
+            img->data[y][i].blue = 0;
+        }
+    }
+    
+    for (int i = 0; i < height; i++) {
+        int x = 2 * width / 3;
+        if (x >= 0 && x < width && i >= 0 && i < height) {
+            img->data[i][x].red = 0;
+            img->data[i][x].green = 0;
+            img->data[i][x].blue = 0;
         }
     }
     
@@ -44,7 +120,7 @@ t_bmp24* create_test_image(int width, int height) {
 }
 
 int main() {
-    // Part 1: Test BMP8 functionality (existing code)
+    // Part 1: Test BMP8 functionality - keep this unchanged
     const char *inputFilename8 = "lena_gray_8bit.bmp";
     printf("===== Testing 8-bit BMP processing =====\n");
     t_bmp8 *image8 = bmp8_loadImage(inputFilename8);
@@ -91,28 +167,39 @@ int main() {
     
     // Check if file exists before trying to load it
     FILE *check = fopen(inputFilename24, "rb");
+    t_bmp24 *originalImage = NULL;  // This will store our original image for later use
+    
     if (check == NULL) {
         printf("File not found: %s\n", inputFilename24);
-        printf("Please make sure the image file is in the current working directory.\n");
-        // You might want to try with an absolute path if needed
-        // inputFilename24 = "/full/path/to/lena_color.bmp";
-    } else {
-        fclose(check);
-    }
-    
-    t_bmp24 *image24 = bmp24_loadImage(inputFilename24);
-    
-    if (image24 == NULL) {
-        printf("Failed to load 24-bit image: %s\n", inputFilename24);
         printf("Creating a synthetic test image instead...\n");
-        
-        // Create a synthetic image if we can't load a file
-        image24 = create_test_image(400, 300);
-        if (image24 == NULL) {
+        originalImage = create_test_image(400, 300);
+        if (originalImage == NULL) {
             printf("Failed to create synthetic image. Exiting.\n");
             return 1;
         }
         printf("Created a synthetic 400x300 gradient image.\n");
+    } else {
+        fclose(check);
+        originalImage = bmp24_loadImage(inputFilename24);
+        if (originalImage == NULL) {
+            printf("Failed to load 24-bit image: %s\n", inputFilename24);
+            printf("Creating a synthetic test image instead...\n");
+            originalImage = create_test_image(400, 300);
+            if (originalImage == NULL) {
+                printf("Failed to create synthetic image. Exiting.\n");
+                return 1;
+            }
+        } else {
+            printf("Successfully loaded %s\n", inputFilename24);
+        }
+    }
+    
+    // Make a working copy of the original image for the first set of tests
+    t_bmp24 *image24 = bmp24_copy(originalImage);
+    if (image24 == NULL) {
+        printf("Failed to copy image. Exiting.\n");
+        bmp24_free(originalImage);
+        return 1;
     }
 
     // Print basic image information
@@ -159,107 +246,116 @@ int main() {
         }
     }
 
-    // Free the 24-bit image
+    // Free the 24-bit image working copy
     bmp24_free(image24);
     printf("24-bit image processing completed!\n");
     
     // Test basic image processing functions
     printf("\n===== Testing 24-bit Image Processing Functions =====\n");
     
-    // Create a fresh test image
-    t_bmp24 *testImg = create_test_image(400, 300);
-    
-    // Test negative
+    // Test negative - use a copy of the original image
     printf("Applying negative filter...\n");
+    t_bmp24 *testImg = bmp24_copy(originalImage);
+    if (testImg == NULL) {
+        printf("Failed to copy image. Exiting.\n");
+        bmp24_free(originalImage);
+        return 1;
+    }
     bmp24_negative(testImg);
     bmp24_saveImage(testImg, "test_negative.bmp");
-    
-    // Reset image
     bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
     
-    // Test grayscale
+    // Test grayscale - use a copy of the original image
     printf("Converting to grayscale...\n");
-    bmp24_grayscale(testImg);
-    bmp24_saveImage(testImg, "test_grayscale.bmp");
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_grayscale(testImg);
+        bmp24_saveImage(testImg, "test_grayscale.bmp");
+        bmp24_free(testImg);
+    }
     
-    // Reset image
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
-    
-    // Test brightness
+    // Test brightness - use a copy of the original image
     printf("Increasing brightness...\n");
-    bmp24_brightness(testImg, 50);
-    bmp24_saveImage(testImg, "test_brighter.bmp");
-    
-    printf("Decreasing brightness...\n");
-    bmp24_brightness(testImg, -75);  // Darker from the brightened image
-    bmp24_saveImage(testImg, "test_darker.bmp");
-    
-    // Reset image for filter tests
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_brightness(testImg, 50);
+        bmp24_saveImage(testImg, "test_brighter.bmp");
+        
+        printf("Decreasing brightness...\n");
+        bmp24_brightness(testImg, -75);  // Darker from the brightened image
+        bmp24_saveImage(testImg, "test_darker.bmp");
+        bmp24_free(testImg);
+    }
     
     // Test convolution filters
     printf("\n===== Testing Convolution Filters =====\n");
     
     // Box blur
     printf("Applying box blur filter...\n");
-    // Print a sample before filter
-    printf("Sample before box blur - Pixel at (100,100): R=%d, G=%d, B=%d\n", 
-           testImg->data[100][100].red,
-           testImg->data[100][100].green,
-           testImg->data[100][100].blue);
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        t_bmp24 *beforeBlur = bmp24_copy(testImg);
+        bmp24_boxBlur(testImg);
+        bmp24_saveImage(testImg, "test_box_blur.bmp");
+        
+        // Compare before/after pixel values for debugging
+        if (beforeBlur != NULL) {
+            printf("Sample comparison before/after blur:\n");
+            int sampleX = testImg->width / 2;
+            int sampleY = testImg->height / 2;
+            printf("Before - Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
+                   sampleX, sampleY,
+                   beforeBlur->data[sampleY][sampleX].red,
+                   beforeBlur->data[sampleY][sampleX].green,
+                   beforeBlur->data[sampleY][sampleX].blue);
+            printf("After  - Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
+                   sampleX, sampleY,
+                   testImg->data[sampleY][sampleX].red,
+                   testImg->data[sampleY][sampleX].green,
+                   testImg->data[sampleY][sampleX].blue);
+            bmp24_free(beforeBlur);
+        }
+        bmp24_free(testImg);
+    }
     
-    bmp24_boxBlur(testImg);
-    
-    // Print a sample after filter
-    printf("Sample after box blur - Pixel at (100,100): R=%d, G=%d, B=%d\n", 
-           testImg->data[100][100].red,
-           testImg->data[100][100].green,
-           testImg->data[100][100].blue);
-    
-    bmp24_saveImage(testImg, "test_box_blur.bmp");
-    
-    // Reset image
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
-    
-    // Continue with other tests with debugging
     // Gaussian blur
     printf("Applying gaussian blur filter...\n");
-    bmp24_gaussianBlur(testImg);
-    bmp24_saveImage(testImg, "test_gaussian_blur.bmp");
-    
-    // Reset image
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_gaussianBlur(testImg);
+        bmp24_saveImage(testImg, "test_gaussian_blur.bmp");
+        bmp24_free(testImg);
+    }
     
     // Outline
     printf("Applying outline filter...\n");
-    bmp24_outline(testImg);
-    bmp24_saveImage(testImg, "test_outline.bmp");
-    
-    // Reset image
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_outline(testImg);
+        bmp24_saveImage(testImg, "test_outline.bmp");
+        bmp24_free(testImg);
+    }
     
     // Emboss
     printf("Applying emboss filter...\n");
-    bmp24_emboss(testImg);
-    bmp24_saveImage(testImg, "test_emboss.bmp");
-    
-    // Reset image
-    bmp24_free(testImg);
-    testImg = create_test_image(400, 300);
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_emboss(testImg);
+        bmp24_saveImage(testImg, "test_emboss.bmp");
+        bmp24_free(testImg);
+    }
     
     // Sharpen
     printf("Applying sharpen filter...\n");
-    bmp24_sharpen(testImg);
-    bmp24_saveImage(testImg, "test_sharpen.bmp");
+    testImg = bmp24_copy(originalImage);
+    if (testImg != NULL) {
+        bmp24_sharpen(testImg);
+        bmp24_saveImage(testImg, "test_sharpen.bmp");
+        bmp24_free(testImg);
+    }
     
-    // Free memory
-    bmp24_free(testImg);
+    // Free the original image
+    bmp24_free(originalImage);
     
     printf("\nAll image processing tests completed!\n");
     
