@@ -5,6 +5,10 @@
 #ifndef BMP8_H
 #define BMP8_H
 
+#define BITMAP_MAGIC 0x00 // offset 0
+#define BITMAP_SIZE 0x02 // offset 2
+#define BITMAP_OFFSET 0x0A // offset 10
+
 typedef struct {
     unsigned char header[54];
     unsigned char colorTable[1024];
@@ -15,6 +19,7 @@ typedef struct {
     unsigned short colorDepth;
     unsigned int dataSize;
 } t_bmp8;
+
 
 t_bmp8 * bmp8_loadImage(const char * filename);
 void bmp8_saveImage(const char * filename, t_bmp8 * image);
