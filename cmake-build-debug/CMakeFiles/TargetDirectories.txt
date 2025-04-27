@@ -1,0 +1,3 @@
+/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/CMakeFiles/project_c_Amel_Tom.dir
+/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/CMakeFiles/rebuild_cache.dir

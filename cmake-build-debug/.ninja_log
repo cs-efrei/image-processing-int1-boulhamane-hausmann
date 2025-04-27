@@ -1,0 +1,14 @@
+# ninja log v6
+201	323	1745406936090246669	project_c_Amel_Tom	d73cca431f8b87bb
+1	201	1745406935890032427	CMakeFiles/project_c_Amel_Tom.dir/bmp8.c.o	dd1cdd8c3ba30c1a
+0	201	1745406935889168878	CMakeFiles/project_c_Amel_Tom.dir/main.c.o	d8ffa3627e17e7a8
+2	51	1745407610480646314	build.ninja	a1faeddf494db948
+1	51	1745407610480646314	build.ninja	a1faeddf494db948
+0	202	1745407610488555757	CMakeFiles/project_c_Amel_Tom.dir/main.c.o	d8ffa3627e17e7a8
+202	319	1745407610690476181	project_c_Amel_Tom	d73cca431f8b87bb
+1	161	1745407708922447116	CMakeFiles/project_c_Amel_Tom.dir/main.c.o	d8ffa3627e17e7a8
+161	249	1745407709082271057	project_c_Amel_Tom	d73cca431f8b87bb
+2	222	1745408601669114672	CMakeFiles/project_c_Amel_Tom.dir/main.c.o	d8ffa3627e17e7a8
+222	342	1745408601889175941	project_c_Amel_Tom	d73cca431f8b87bb
+2	167	1745408629288039483	CMakeFiles/project_c_Amel_Tom.dir/main.c.o	d8ffa3627e17e7a8
+167	268	1745408629453149404	project_c_Amel_Tom	d73cca431f8b87bb
