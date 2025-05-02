@@ -1,49 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bmp8.h"
-#include "bmp24.h"
+#include "bmp8.c"
+#include "bmp24.c"
+#include "histo.c"
 #include <math.h>
 
-// Function to create a synthetic test image
 t_bmp24* create_test_image(int width, int height) {
     t_bmp24 *img = bmp24_allocate(width, height, 24);
     if (img == NULL) {
         return NULL;
     }
     
-    // Initialize BMP header with standard values
-    img->header.type = BMP_TYPE;  // 'BM'
-    img->header.size = HEADER_SIZE + INFO_SIZE + (width * height * 3); // Total file size
+    img->header.type = BMP_TYPE; 
+    img->header.size = HEADER_SIZE + INFO_SIZE + (width * height * 3); 
     img->header.reserved1 = 0;
     img->header.reserved2 = 0;
-    img->header.offset = HEADER_SIZE + INFO_SIZE; // Offset to pixel data
-    
-    // Initialize info header
-    img->header_info.size = INFO_SIZE;  // Size of info header
+    img->header.offset = HEADER_SIZE + INFO_SIZE; 
+
+    img->header_info.size = INFO_SIZE;
     img->header_info.width = width;
     img->header_info.height = height;
     img->header_info.planes = 1;
     img->header_info.bits = 24;
-    img->header_info.compression = 0;  // No compression
+    img->header_info.compression = 0;  
     img->header_info.imagesize = width * height * 3;
     img->header_info.xresolution = 2835; // 72 DPI
     img->header_info.yresolution = 2835; // 72 DPI
     img->header_info.ncolors = 0;
     img->header_info.importantcolors = 0;
     
-    // First, fill the whole image with a gradient background
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            // Create a subtle gradient for background
             img->data[y][x].red = (uint8_t)(((float)x / (float)width) * 150.0f + 50);
             img->data[y][x].green = (uint8_t)(((float)y / (float)height) * 150.0f + 50);
             img->data[y][x].blue = 200;
         }
     }
     
-    // Draw some geometric shapes for better filter visibility
-    
-    // 1. Draw a white square in the center
+
     int square_size = width / 4;
     int square_x = width / 2 - square_size / 2;
     int square_y = height / 2 - square_size / 2;
@@ -58,14 +53,13 @@ t_bmp24* create_test_image(int width, int height) {
         }
     }
     
-    // 2. Draw a red circle in the top left
+
     int circle_radius = width / 8;
     int circle_x = width / 4;
     int circle_y = height / 4;
     
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            // Calculate distance from center of circle
             float dx = x - circle_x;
             float dy = y - circle_y;
             float distance = sqrt(dx*dx + dy*dy);
@@ -78,13 +72,11 @@ t_bmp24* create_test_image(int width, int height) {
         }
     }
     
-    // 3. Draw a green circle in the bottom right
     circle_x = 3 * width / 4;
     circle_y = 3 * height / 4;
     
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            // Calculate distance from center of circle
             float dx = x - circle_x;
             float dy = y - circle_y;
             float distance = sqrt(dx*dx + dy*dy);
@@ -97,7 +89,6 @@ t_bmp24* create_test_image(int width, int height) {
         }
     }
     
-    // 4. Draw some lines for edge detection tests
     for (int i = 0; i < width; i++) {
         int y = height / 3;
         if (i >= 0 && i < width && y >= 0 && y < height) {
@@ -222,17 +213,7 @@ int main() {
         }
     }
     bmp24_saveImage(image24, "test_rb_swapped.bmp");
-    
-    printf("\nDebug - Sample pixel values:\n");
-    for (int y = 0; y < 3; y++) {
-        for (int x = 0; x < 3; x++) {
-            printf("Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
-                   x, y,
-                   image24->data[y][x].red,
-                   image24->data[y][x].green,
-                   image24->data[y][x].blue);
-        }
-    }
+
 
     bmp24_free(image24);
     printf("24-bit image processing completed!\n");
@@ -340,5 +321,7 @@ int main() {
     printf("\nAll image processing tests completed!\n");
     
     printf("\nAll processing complete!\n");
+ 
+    
     return 0;
 }
