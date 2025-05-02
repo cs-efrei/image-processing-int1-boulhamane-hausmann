@@ -1,13 +1,7 @@
+#include "histogram_equalization.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-// Structure simplifiée de l'image 8 bits en niveaux de gris
-typedef struct {
-    int width;
-    int height;
-    unsigned char *data; // tableau de taille width * height
-} t_bmp8;
 
 // 1. Calcul de l'histogramme
 typedef unsigned int uint;
@@ -18,7 +12,7 @@ uint *bmp8_computeHistogram(t_bmp8 *img) {
     uint *hist = calloc(256, sizeof(uint));
     if (!hist) return NULL;
 
-    for (int i = 0; i < img->width * img->height; i++) {
+    for (unsigned int i = 0; i < img->dataSize; i++) {
         hist[img->data[i]]++;
     }
 
@@ -67,11 +61,13 @@ uint *computeEqualizedMapping(uint *cdf, int total_pixels) {
 void bmp8_equalize(t_bmp8 *img, uint *hist_eq) {
     if (!img || !img->data || !hist_eq) return;
 
-    for (int i = 0; i < img->width * img->height; i++) {
+    for (unsigned int i = 0; i < img->dataSize; i++) {
         img->data[i] = (unsigned char)hist_eq[img->data[i]];
     }
 }
 
+/* 
+// Example test code (commented out):
 // Exemple d'utilisation (sans chargement réel d'image)
 int main() {
     // Création d'une image de test (10x10 pixels)
@@ -99,7 +95,5 @@ int main() {
 
     return 0;
 }
+*/
 
-//
-// Created by Boulhamane Amel on 02/05/2025.
-//

@@ -1,6 +1,106 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bmp24.h"
+#include  <math.h>
+
+typedef struct {
+    float y;
+    float u;
+    float v;
+} t_yuv;
+
+t_yuv rgb_to_yuv(uint8_t r, uint8_t g, uint8_t b) {
+    t_yuv yuv;
+    yuv.y = 0.299f * r + 0.587f * g + 0.114f * b;
+    yuv.u = -0.14713f * r - 0.28886f * g + 0.436f * b;
+    yuv.v = 0.615f * r - 0.51499f * g - 0.10001f * b;
+    return yuv;
+}
+
+// Convert YUV to RGB
+t_pixel yuv_to_rgb(t_yuv yuv) {
+    t_pixel rgb;
+    float r = yuv.y + 1.13983f * yuv.v;
+    float g = yuv.y - 0.39465f * yuv.u - 0.58060f * yuv.v;
+    float b = yuv.y + 2.03211f * yuv.u;
+    
+    rgb.red = (uint8_t)(r < 0 ? 0 : (r > 255 ? 255 : round(r)));
+    rgb.green = (uint8_t)(g < 0 ? 0 : (g > 255 ? 255 : round(g)));
+    rgb.blue = (uint8_t)(b < 0 ? 0 : (b > 255 ? 255 : round(b)));
+    
+    return rgb;
+}
+
+// Histogram equalization for color images in YUV space
+void bmp24_equalize(t_bmp24 *img) {
+    if (img == NULL || img->data == NULL) return;
+    
+    int width = img->width;
+    int height = img->height;
+    int total_pixels = width * height;
+    
+    t_yuv **yuv_data = (t_yuv **)malloc(height * sizeof(t_yuv *));
+    for (int i = 0; i < height; i++) {
+        yuv_data[i] = (t_yuv *)malloc(width * sizeof(t_yuv));
+        for (int j = 0; j < width; j++) {
+            yuv_data[i][j] = rgb_to_yuv(
+                img->data[i][j].red,
+                img->data[i][j].green,
+                img->data[i][j].blue
+            );
+        }
+    }
+    
+    unsigned int *hist = (unsigned int *)calloc(256, sizeof(unsigned int));
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int y_val = (int)round(yuv_data[i][j].y);
+            y_val = (y_val < 0) ? 0 : (y_val > 255) ? 255 : y_val;
+            hist[y_val]++;
+        }
+    }
+    
+    unsigned int *cdf = (unsigned int *)malloc(256 * sizeof(unsigned int));
+    cdf[0] = hist[0];
+    for (int i = 1; i < 256; i++) {
+        cdf[i] = cdf[i-1] + hist[i];
+    }
+    
+    unsigned int cdf_min = 0;
+    for (int i = 0; i < 256; i++) {
+        if (cdf[i] > 0) {
+            cdf_min = cdf[i];
+            break;
+        }
+    }
+    
+    unsigned int *eq_mapping = (unsigned int *)malloc(256 * sizeof(unsigned int));
+    for (int i = 0; i < 256; i++) {
+        eq_mapping[i] = round(((float)(cdf[i] - cdf_min) / (total_pixels - cdf_min)) * 255.0f);
+    }
+    
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int y_val = (int)round(yuv_data[i][j].y);
+            y_val = (y_val < 0) ? 0 : (y_val > 255) ? 255 : y_val;
+            yuv_data[i][j].y = (float)eq_mapping[y_val];
+        }
+    }
+    
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            img->data[i][j] = yuv_to_rgb(yuv_data[i][j]);
+        }
+    }
+    
+    for (int i = 0; i < height; i++) {
+        free(yuv_data[i]);
+    }
+    free(yuv_data);
+    free(hist);
+    free(cdf);
+    free(eq_mapping);
+}
 
 t_pixel **bmp24_allocateDataPixels(int width, int height) {
     t_pixel **pixels = (t_pixel **)malloc(height * sizeof(t_pixel *));

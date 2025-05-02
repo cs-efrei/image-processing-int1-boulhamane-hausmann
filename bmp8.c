@@ -65,7 +65,6 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
 
     fclose(file);
 
-    // Création de la matrice pixels
     int rowSize = ((image->width + 3) / 4) * 4;
     image->pixels = malloc(image->height * sizeof(unsigned char *));
     for (unsigned int i = 0; i < image->height; i++) {
@@ -173,8 +172,6 @@ void bmp8_applyFilter(t_bmp8 * img, float **kernel, int kernelSize) {
             img->pixels[y][x] = (unsigned char)(sum);
         }
     }
-
-    // Copier les pixels vers data (ligne par ligne)
     int rowSize = ((width + 3) / 4) * 4;
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -186,4 +183,54 @@ void bmp8_applyFilter(t_bmp8 * img, float **kernel, int kernelSize) {
         free(tempPixels[i]);
     }
     free(tempPixels);
+}
+
+t_bmp8 * bmp8_copy(t_bmp8 * src) {
+    if (src == NULL) return NULL;
+
+    t_bmp8 * dest = (t_bmp8 *) malloc(sizeof(t_bmp8));
+    if (dest == NULL) {
+        return NULL;
+    }
+
+    memcpy(dest->header, src->header, 54);
+    memcpy(dest->colorTable, src->colorTable, 1024);
+    
+    dest->width = src->width;
+    dest->height = src->height;
+    dest->colorDepth = src->colorDepth;
+    dest->dataSize = src->dataSize;
+
+    dest->data = (unsigned char *) malloc(src->dataSize);
+    if (dest->data == NULL) {
+        free(dest);
+        return NULL;
+    }
+    memcpy(dest->data, src->data, src->dataSize);
+
+    int rowSize = ((src->width + 3) / 4) * 4;
+    dest->pixels = malloc(src->height * sizeof(unsigned char *));
+    if (dest->pixels == NULL) {
+        free(dest->data);
+        free(dest);
+        return NULL;
+    }
+
+    for (unsigned int i = 0; i < src->height; i++) {
+        dest->pixels[i] = malloc(src->width * sizeof(unsigned char));
+        if (dest->pixels[i] == NULL) {
+            for (unsigned int j = 0; j < i; j++) {
+                free(dest->pixels[j]);
+            }
+            free(dest->pixels);
+            free(dest->data);
+            free(dest);
+            return NULL;
+        }
+        for (unsigned int j = 0; j < src->width; j++) {
+            dest->pixels[i][j] = src->pixels[i][j];
+        }
+    }
+
+    return dest;
 }

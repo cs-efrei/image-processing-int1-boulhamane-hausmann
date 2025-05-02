@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include "bmp8.c"
 #include "bmp24.c"
-#include "histo.c"
+#include "histogram_equalization.c"
 #include <math.h>
+
+t_bmp24* create_test_image(int width, int height);
 
 t_bmp24* create_test_image(int width, int height) {
     t_bmp24 *img = bmp24_allocate(width, height, 24);
@@ -315,13 +317,177 @@ int main() {
         bmp24_free(testImg);
     }
     
+    // Test histogram equalization functions
+    printf("\n===== Testing Histogram Equalization =====\n");
+    // Load the 8-bit image again for histogram processing
+    t_bmp8 *histImg = bmp8_loadImage(inputFilename8);
+    if (histImg == NULL) {
+        printf("Failed to load 8-bit image for histogram equalization: %s\n", inputFilename8);
+        // Create a synthetic 8-bit image if necessary
+        // For this example, we'll just skip if loading fails
+    } else {
+        printf("Processing histogram equalization on %s\n", inputFilename8);
+        
+        // Copy the original image to preserve it
+        t_bmp8 *origCopy = bmp8_copy(histImg);
+        if (origCopy != NULL) {
+            bmp8_saveImage("hist_original.bmp", origCopy);
+            
+            // Step 1: Compute the histogram
+            printf("Computing histogram...\n");
+            unsigned int *histogram = bmp8_computeHistogram(origCopy);
+            if (histogram != NULL) {
+                printf("Histogram computed successfully\n");
+                
+                // Print some histogram values
+                printf("Sample histogram values:\n");
+                for (int i = 0; i < 256; i += 25) {
+                    printf("  Value %d: %u pixels\n", i, histogram[i]);
+                }
+                
+                // Step 2: Compute CDF
+                printf("Computing CDF...\n");
+                unsigned int *cdf = bmp8_computeCDF(histogram);
+                if (cdf != NULL) {
+                    // Step 3: Compute equalization mapping
+                    int totalPixels = origCopy->width * origCopy->height;
+                    printf("Computing equalization mapping for %d pixels...\n", totalPixels);
+                    unsigned int *eq_mapping = computeEqualizedMapping(cdf, totalPixels);
+                    
+                    if (eq_mapping != NULL) {
+                        // Step 4: Apply equalization
+                        printf("Applying histogram equalization...\n");
+                        bmp8_equalize(origCopy, eq_mapping);
+                        
+                        // Save the equalized image
+                        bmp8_saveImage("hist_equalized.bmp", origCopy);
+                        printf("Saved equalized image to hist_equalized.bmp\n");
+                        
+                        free(eq_mapping);
+                    } else {
+                        printf("Failed to compute equalization mapping\n");
+                    }
+                    free(cdf);
+                } else {
+                    printf("Failed to compute CDF\n");
+                }
+                free(histogram);
+            } else {
+                printf("Failed to compute histogram\n");
+            }
+            bmp8_free(origCopy);
+        }
+        bmp8_free(histImg);
+    }
+    
+    printf("\n===== Testing Histogram Equalization on flowers_colors.bmp =====\n");
+    const char *flowerFilename = "flowers_color.bmp";
+    printf("Attempting to load image from: %s\n", flowerFilename);
+    FILE *flowerCheck = fopen(flowerFilename, "rb");
+    if (flowerCheck == NULL) {
+        printf("File not found: %s\n", flowerFilename);
+        printf("Skipping flowers image equalization...\n");
+    } else {
+        fclose(flowerCheck);
+        
+        t_bmp24 *flowerColor = bmp24_loadImage(flowerFilename);
+        if (flowerColor == NULL) {
+            printf("Failed to load color image: %s\n", flowerFilename);
+        } else {
+            printf("Successfully loaded %s\n", flowerFilename);
+            
+            bmp24_saveImage(flowerColor, "flower_original.bmp");
+            
+
+            t_bmp24 *flowerGrayCopy = bmp24_copy(flowerColor);
+            if (flowerGrayCopy != NULL) {
+                bmp24_grayscale(flowerGrayCopy);
+                bmp24_saveImage(flowerGrayCopy, "flower_gray.bmp");
+                
+    
+                
+                bmp24_free(flowerGrayCopy);
+            }
+            
+            printf("Applying YUV color histogram equalization...\n");
+            t_bmp24 *flowerYuvCopy = bmp24_copy(flowerColor);
+            if (flowerYuvCopy != NULL) {
+                bmp24_equalize(flowerYuvCopy);
+                bmp24_saveImage(flowerYuvCopy, "flower_yuv_equalized.bmp");
+                printf("Saved YUV-equalized flower image to flower_yuv_equalized.bmp\n");
+                bmp24_free(flowerYuvCopy);
+            }
+            
+            bmp24_free(flowerColor);
+        }
+    }
+
+    printf("\n===== Testing Color Histogram Equalization on flowers_color.bmp =====\n");
+    
+    const char *flowerFilenames[] = {"flowers_color.bmp", "flowers.bmp", "flower.bmp", "flower_color.bmp"};
+    t_bmp24 *flowerColor = NULL;
+    
+    for (int i = 0; i < 4 && flowerColor == NULL; i++) {
+        printf("Attempting to load image from: %s\n", flowerFilenames[i]);
+        FILE *flowerCheck = fopen(flowerFilenames[i], "rb");
+        if (flowerCheck != NULL) {
+            fclose(flowerCheck);
+            flowerColor = bmp24_loadImage(flowerFilenames[i]);
+            if (flowerColor != NULL) {
+                printf("Successfully loaded %s\n", flowerFilenames[i]);
+                break;
+            }
+        }
+    }
+    
+    if (flowerColor == NULL) {
+        printf("Could not find any flower image. Creating a test image instead.\n");
+        flowerColor = create_test_image(400, 300);
+        if (flowerColor == NULL) {
+            printf("Failed to create test image for flower equalization. Skipping.\n");
+        }
+    }
+    
+    if (flowerColor != NULL) {
+        bmp24_saveImage(flowerColor, "flower_original.bmp");
+        printf("Saved original flower image to flower_original.bmp\n");
+        
+        printf("Applying YUV color histogram equalization to flower image...\n");
+        t_bmp24 *flowerYuvCopy = bmp24_copy(flowerColor);
+        if (flowerYuvCopy != NULL) {
+            bmp24_equalize(flowerYuvCopy);
+
+            bmp24_saveImage(flowerYuvCopy, "flower_yuv_equalized.bmp");
+            printf("Saved YUV-equalized flower image to flower_yuv_equalized.bmp\n");
+            
+            int sampleX = flowerColor->width / 2;
+            int sampleY = flowerColor->height / 2;
+            printf("Sample comparison before/after YUV equalization:\n");
+            printf("Before - Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
+                   sampleX, sampleY,
+                   flowerColor->data[sampleY][sampleX].red,
+                   flowerColor->data[sampleY][sampleX].green,
+                   flowerColor->data[sampleY][sampleX].blue);
+            printf("After  - Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
+                   sampleX, sampleY,
+                   flowerYuvCopy->data[sampleY][sampleX].red,
+                   flowerYuvCopy->data[sampleY][sampleX].green,
+                   flowerYuvCopy->data[sampleY][sampleX].blue);
+                   
+            bmp24_free(flowerYuvCopy);
+        } else {
+            printf("Failed to create copy of flower image for YUV equalization\n");
+        }
+        
+        bmp24_free(flowerColor);
+        printf("Flower image processing completed!\n");
+    }
 
     bmp24_free(originalImage);
     
     printf("\nAll image processing tests completed!\n");
     
     printf("\nAll processing complete!\n");
- 
     
     return 0;
 }

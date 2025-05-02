@@ -30,5 +30,6 @@ void bmp8_negative(t_bmp8 * image);
 void bmp8_changeBrightness(t_bmp8 * image, int brightnessChange);
 void bmp8_threshold(t_bmp8 * image, int threshold);
 void bmp8_applyFilter(t_bmp8 * image, float **kernel, int kernelSize);
+t_bmp8 * bmp8_copy(t_bmp8 * src);
 
 #endif //BMP8_H

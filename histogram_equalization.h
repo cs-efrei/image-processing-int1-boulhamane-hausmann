@@ -5,15 +5,8 @@
 #define BMP8_EQUALIZATION_H
 
 #include <stdlib.h>
+#include "bmp8.h"
 
-// Structure de l'image BMP en niveaux de gris 8 bits
-typedef struct {
-    int width;
-    int height;
-    unsigned char *data;
-} t_bmp8;
-
-// Fonctions de traitement
 unsigned int * bmp8_computeHistogram(t_bmp8 * img);
 unsigned int * bmp8_computeCDF(unsigned int * hist);
 unsigned int * computeEqualizedMapping(unsigned int *cdf, int total_pixels);

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "histogram_equalization.h": "c",
+        "stdlib.h": "c"
+    }
+}
