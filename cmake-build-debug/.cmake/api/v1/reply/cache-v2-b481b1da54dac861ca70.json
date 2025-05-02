@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug"
+			"value" : "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -399,7 +399,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -459,7 +459,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom"
+			"value" : "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1047,7 +1047,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug"
+			"value" : "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug"
 		},
 		{
 			"name" : "project_c_Amel_Tom_IS_TOP_LEVEL",
@@ -1071,7 +1071,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom"
+			"value" : "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann"
 		}
 	],
 	"kind" : "cache",

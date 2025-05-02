@@ -5,4 +5,7 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(project_c_Amel_Tom main.c
         bmp8.c
-        bmp8.h)
+        bmp8.h
+        histogram_equalization.h
+        histogram_equlization.c
+)

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom
+# Install script for directory: /Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,7 +40,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/install_local_manifest.txt"
+  file(WRITE "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -56,6 +56,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/boulhamaneamel/CLionProjects/project-c-Amel-Tom/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
