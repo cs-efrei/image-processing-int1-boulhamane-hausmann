@@ -120,7 +120,6 @@ t_bmp24* create_test_image(int width, int height) {
 }
 
 int main() {
-    // Part 1: Test BMP8 functionality - keep this unchanged
     const char *inputFilename8 = "lena_gray_8bit.bmp";
     printf("===== Testing 8-bit BMP processing =====\n");
     t_bmp8 *image8 = bmp8_loadImage(inputFilename8);
@@ -160,14 +159,11 @@ int main() {
         printf("8-bit image processing completed!\n\n");
     }
 
-    // Part 2: Test BMP24 functionality
-    printf("===== Testing 24-bit BMP processing =====\n");
     const char *inputFilename24 = "lena_color.bmp";
     printf("Attempting to load image from: %s\n", inputFilename24);
     
-    // Check if file exists before trying to load it
     FILE *check = fopen(inputFilename24, "rb");
-    t_bmp24 *originalImage = NULL;  // This will store our original image for later use
+    t_bmp24 *originalImage = NULL;  
     
     if (check == NULL) {
         printf("File not found: %s\n", inputFilename24);
@@ -194,7 +190,6 @@ int main() {
         }
     }
     
-    // Make a working copy of the original image for the first set of tests
     t_bmp24 *image24 = bmp24_copy(originalImage);
     if (image24 == NULL) {
         printf("Failed to copy image. Exiting.\n");
@@ -202,18 +197,14 @@ int main() {
         return 1;
     }
 
-    // Print basic image information
     printf("24-bit Image Info:\n");
     printf("    Width: %d\n", image24->width);
     printf("    Height: %d\n", image24->height);
     printf("    Color Depth: %d\n", image24->colorDepth);
     
-    // Save a copy of the original image
     bmp24_saveImage(image24, "test_original.bmp");
     printf("Created original image: test_original.bmp\n");
-    
-    // Example pixel manipulation: Set top-left corner (50x50) to red
-    printf("Setting top-left corner (50x50) to red...\n");
+
     for (int y = 0; y < 50 && y < image24->height; y++) {
         for (int x = 0; x < 50 && x < image24->width; x++) {
             image24->data[y][x].red = 255;
@@ -222,9 +213,7 @@ int main() {
         }
     }
     bmp24_saveImage(image24, "test_red_corner.bmp");
-    
-    // Example pixel manipulation: Swap red and blue channels
-    printf("Creating a version with red and blue channels swapped...\n");
+
     for (int y = 0; y < image24->height; y++) {
         for (int x = 0; x < image24->width; x++) {
             uint8_t temp = image24->data[y][x].red;
@@ -234,7 +223,6 @@ int main() {
     }
     bmp24_saveImage(image24, "test_rb_swapped.bmp");
     
-    // Debug: Print some pixel values to verify they're not all black
     printf("\nDebug - Sample pixel values:\n");
     for (int y = 0; y < 3; y++) {
         for (int x = 0; x < 3; x++) {
@@ -246,14 +234,11 @@ int main() {
         }
     }
 
-    // Free the 24-bit image working copy
     bmp24_free(image24);
     printf("24-bit image processing completed!\n");
     
-    // Test basic image processing functions
     printf("\n===== Testing 24-bit Image Processing Functions =====\n");
     
-    // Test negative - use a copy of the original image
     printf("Applying negative filter...\n");
     t_bmp24 *testImg = bmp24_copy(originalImage);
     if (testImg == NULL) {
@@ -265,7 +250,6 @@ int main() {
     bmp24_saveImage(testImg, "test_negative.bmp");
     bmp24_free(testImg);
     
-    // Test grayscale - use a copy of the original image
     printf("Converting to grayscale...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -274,7 +258,6 @@ int main() {
         bmp24_free(testImg);
     }
     
-    // Test brightness - use a copy of the original image
     printf("Increasing brightness...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -282,15 +265,15 @@ int main() {
         bmp24_saveImage(testImg, "test_brighter.bmp");
         
         printf("Decreasing brightness...\n");
-        bmp24_brightness(testImg, -75);  // Darker from the brightened image
+        bmp24_brightness(testImg, -75);  
         bmp24_saveImage(testImg, "test_darker.bmp");
         bmp24_free(testImg);
     }
     
-    // Test convolution filters
+
     printf("\n===== Testing Convolution Filters =====\n");
     
-    // Box blur
+
     printf("Applying box blur filter...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -298,7 +281,6 @@ int main() {
         bmp24_boxBlur(testImg);
         bmp24_saveImage(testImg, "test_box_blur.bmp");
         
-        // Compare before/after pixel values for debugging
         if (beforeBlur != NULL) {
             printf("Sample comparison before/after blur:\n");
             int sampleX = testImg->width / 2;
@@ -318,7 +300,6 @@ int main() {
         bmp24_free(testImg);
     }
     
-    // Gaussian blur
     printf("Applying gaussian blur filter...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -326,8 +307,7 @@ int main() {
         bmp24_saveImage(testImg, "test_gaussian_blur.bmp");
         bmp24_free(testImg);
     }
-    
-    // Outline
+
     printf("Applying outline filter...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -336,7 +316,7 @@ int main() {
         bmp24_free(testImg);
     }
     
-    // Emboss
+
     printf("Applying emboss filter...\n");
     testImg = bmp24_copy(originalImage);
     if (testImg != NULL) {
@@ -354,7 +334,7 @@ int main() {
         bmp24_free(testImg);
     }
     
-    // Free the original image
+
     bmp24_free(originalImage);
     
     printf("\nAll image processing tests completed!\n");
