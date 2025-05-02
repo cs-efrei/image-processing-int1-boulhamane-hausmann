@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bmp8.h"
-#include "bmp24.h"
+#include "bmp8.c"
+#include "bmp24.c"
 #include <math.h>
 
 // Function to create a synthetic test image
@@ -222,17 +222,7 @@ int main() {
         }
     }
     bmp24_saveImage(image24, "test_rb_swapped.bmp");
-    
-    printf("\nDebug - Sample pixel values:\n");
-    for (int y = 0; y < 3; y++) {
-        for (int x = 0; x < 3; x++) {
-            printf("Pixel at (%d,%d): R=%d, G=%d, B=%d\n", 
-                   x, y,
-                   image24->data[y][x].red,
-                   image24->data[y][x].green,
-                   image24->data[y][x].blue);
-        }
-    }
+
 
     bmp24_free(image24);
     printf("24-bit image processing completed!\n");
