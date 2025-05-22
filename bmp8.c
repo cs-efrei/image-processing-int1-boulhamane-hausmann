@@ -10,22 +10,26 @@
 t_bmp8 * bmp8_loadImage(const char * filename) {
     FILE * file = fopen(filename, "rb");
     if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier");
+        printf("You have an error opening the file. %s\n", filename);
         return NULL;
     }
 
     t_bmp8 * image = (t_bmp8 *) malloc(sizeof(t_bmp8));
     if (image == NULL) {
-        perror("Erreur d'allocation mémoire pour l'image");
+        printf("Memory allocation error for image.\n");
         fclose(file);
         return NULL;
     }
 
-    if (fread(image->header, sizeof(unsigned char), 54, file) != 54) {
-        fprintf(stderr, "Erreur lors de la lecture du header\n");
-        free(image);
-        fclose(file);
-        return NULL;
+    for (int i = 0; i < 54; i++) {
+        int byte = fgetc(file);
+        if (byte == EOF) {
+            printf("Error reading header\n");
+            free(image);
+            fclose(file);
+            return NULL;
+        }
+        image->header[i] = (unsigned char) byte;
     }
 
     image->width       = *(unsigned int *)&image->header[18];
@@ -34,53 +38,75 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
     image->dataSize    = *(unsigned int *)&image->header[34];
 
     if (image->colorDepth != 8) {
-        fprintf(stderr, "Erreur : l'image n'est pas en 8 bits (colorDepth = %u)\n", image->colorDepth);
+        printf("There's an Error because the image is not 8-bit (colorDepth = %u)\n", image->colorDepth);
         free(image);
         fclose(file);
         return NULL;
     }
 
-    if (fread(image->colorTable, sizeof(unsigned char), 1024, file) != 1024) {
-        fprintf(stderr, "Erreur lors de la lecture de la table de couleurs\n");
-        free(image);
-        fclose(file);
-        return NULL;
+    for (int i = 0; i < 1024; i++) {
+        int byte = fgetc(file);
+        if (byte == EOF) {
+            printf("Error when reading color table\n");
+            free(image);
+            fclose(file);
+            return NULL;
+        }
+        image->colorTable[i] = (unsigned char) byte;
     }
 
     image->data = (unsigned char *) malloc(image->dataSize);
     if (image->data == NULL) {
-        perror("Erreur d'allocation mémoire pour les données");
+        printf("Memory allocation error for data\n");
         free(image);
         fclose(file);
         return NULL;
     }
 
-    if (fread(image->data, sizeof(unsigned char), image->dataSize, file) != image->dataSize) {
-        fprintf(stderr, "Erreur lors de la lecture des données de l'image\n");
-        free(image->data);
-        free(image);
-        fclose(file);
-        return NULL;
+    for (size_t i = 0; i < image->dataSize; i++) {
+        int byte = fgetc(file);
+        if (byte == EOF) {
+            printf("Error reading image data\n");
+            free(image->data);
+            free(image);
+            fclose(file);
+            return NULL;
+        }
+        image->data[i] = (unsigned char) byte;
     }
-
     fclose(file);
 
     int rowSize = ((image->width + 3) / 4) * 4;
     image->pixels = malloc(image->height * sizeof(unsigned char *));
+
+    if (image->pixels == NULL) {
+        printf("Memory allocation error for pixels\n");
+        free(image->data);
+        free(image);
+        return NULL;
+    }
+
     for (unsigned int i = 0; i < image->height; i++) {
         image->pixels[i] = malloc(image->width * sizeof(unsigned char));
+        if (image->pixels[i] == NULL) {
+            printf("Memory allocation error for line %u\n", i);
+            free(image->pixels);
+            free(image->data);
+            free(image);
+            return NULL;
+        }
+
         for (unsigned int j = 0; j < image->width; j++) {
             image->pixels[i][j] = image->data[i * rowSize + j];
         }
     }
-
     return image;
 }
 
 void bmp8_saveImage(const char * filename, t_bmp8 * image) {
     FILE * file = fopen(filename, "wb");
     if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier en écriture");
+        printf("Error opening file for writing\n");
         return;
     }
 
@@ -92,6 +118,7 @@ void bmp8_saveImage(const char * filename, t_bmp8 * image) {
 
     fclose(file);
 }
+
 
 void bmp8_free(t_bmp8 * image) {
     if (image != NULL) {
@@ -108,7 +135,7 @@ void bmp8_free(t_bmp8 * image) {
 
 void bmp8_printInfo(t_bmp8 * image) {
     if (image == NULL) {
-        printf("Aucune image à afficher.\n");
+        printf("No images to display.\n");
         return;
     }
 
@@ -142,7 +169,11 @@ void bmp8_threshold(t_bmp8 * image, int threshold) {
     if (image == NULL || image->data == NULL) return;
 
     for (unsigned int i = 0; i < image->dataSize; ++i) {
-        image->data[i] = (image->data[i] >= threshold) ? 255 : 0;
+        if (image->data[i] >= threshold) {
+            image->data[i] = 255;
+        } else {
+            image->data[i] = 0;
+        }
     }
 }
 
