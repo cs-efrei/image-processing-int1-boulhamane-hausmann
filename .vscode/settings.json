@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "histogram_equalization.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "bmp8.h": "c"
     }
 }

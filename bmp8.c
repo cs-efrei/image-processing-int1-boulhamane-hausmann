@@ -84,6 +84,8 @@ void bmp8_saveImage(const char * filename, t_bmp8 * image) {
         return;
     }
 
+    
+
     fwrite(image->header, sizeof(unsigned char), 54, file);
     fwrite(image->colorTable, sizeof(unsigned char), 1024, file);
     fwrite(image->data, sizeof(unsigned char), image->dataSize, file);

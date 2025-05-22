@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bmp8.c"
-#include "bmp24.c"
-#include "histogram_equalization.c"
+#include "bmp8.h"
+#include "bmp24.h"
+#include "histogram_equalization.h"
 #include <math.h>
 
 t_bmp24* create_test_image(int width, int height);
@@ -135,6 +135,8 @@ int main() {
     printf("\n");
     int choice;
     t_bmp8 *image8 = NULL;
+    char inputFilename8[256];
+
     for (;;) {
         printf("\n1. Open an image \n2. Save an image \n3. Apply a filter \n4. Display image information \n5. Quit\n \n");
 
@@ -144,21 +146,48 @@ int main() {
                 printf("\nYou chose : %d\n", choice);
                     if (choice == 1) {
                         printf("\nFilepath of image : ");
-                        char inputFilename8[256];
                         scanf("%s", inputFilename8);
-                        t_bmp8 *image8 = bmp8_loadImage(inputFilename8);
+                        image8 = bmp8_loadImage(inputFilename8);
                         if (image8 != NULL) {
                             printf("\nImage loaded sucessfully !\n");
-                            bmp8_printInfo(image8);
                         } 
                     }
            
                     if (choice == 2) {
                         if (image8 != NULL) {
-                                bmp8_saveImage("image_negative.bmp", image8);
+                                char outputFilename8[512];
+                                snprintf(outputFilename8, sizeof(outputFilename8), "modified_%s", inputFilename8);
+                                bmp8_saveImage(outputFilename8, image8);
+                                printf("Image saved sucessfully !");
                         } else {
                         printf("You must load an image (and potentially apply filter ;) before saving it");
                      }
+                    }
+                    if (choice == 3) {
+                        if (image8 != NULL) {
+                            printf("\n \nWhich one ? : \n \n1. Negative \n2. Brightness \n3. Black and white \n4. Box Blur \n5. Gaussian blur \n5. Sharpness \n6. Outline \n7. Emboss \n8. Return to the previous menu \n \n ");
+                            for (;;) {
+                            if (scanf("%d", &choice) == 1) {
+                                if(choice>=1&&choice<=8) {
+                                    if (choice == 1) {
+                                        bmp8_negative(image8);
+                                        break;
+                                    }
+                                    if (choice == 8) {
+                                        break;
+                                    }
+                                } else {
+                                    printf("\nInvalid selection, choose again.\n");
+                                }
+                            } else {
+                                printf("\nInvalid input. Please enter a number between 1 and 5.\n");
+                                while (getchar() != '\n');
+                            }
+                        }
+
+                        } else {
+                            printf("\n You must load an image before applying a filter \n");
+                        }
                     }
                     if (choice == 5) {
                         break;
@@ -172,6 +201,7 @@ int main() {
         }
     }
 
+    
 
 // }
     
