@@ -113,8 +113,11 @@ t_bmp24* create_test_image(int width, int height) {
 }
 
 int main() {
-    const char *inputFilename8 = "lena_gray_8bit.bmp";
-    printf("===== Testing 8-bit BMP processing =====\n");
+    printf("What ");
+
+
+    const char *inputFilename8 = "barbara_gray.bmp";
+    printf("===== Testing 8-bit BMP processing (with the barbara image) =====\n");
     t_bmp8 *image8 = bmp8_loadImage(inputFilename8);
     if (image8 == NULL) {
         printf("Failed to load 8-bit image: %s\n", inputFilename8);
@@ -152,7 +155,7 @@ int main() {
         printf("8-bit image processing completed!\n\n");
     }
 
-    const char *inputFilename24 = "lena_color.bmp";
+    const char *inputFilename24 = "flowers_color.bmp";
     printf("Attempting to load image from: %s\n", inputFilename24);
     
     FILE *check = fopen(inputFilename24, "rb");
