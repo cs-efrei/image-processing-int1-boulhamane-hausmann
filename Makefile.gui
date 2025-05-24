@@ -1,0 +1,25 @@
+CC = gcc
+CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
+LIBS = $(shell pkg-config --libs gtk+-3.0) -lm
+
+SRCDIR = project_c_amel_tom_int1
+SOURCES = main_gui.c $(SRCDIR)/bmp8.c $(SRCDIR)/bmp24.c $(SRCDIR)/equalize8.c $(SRCDIR)/equalize24.c
+TARGET = image_gui
+
+all: $(TARGET)
+
+$(TARGET): $(SOURCES)
+	$(CC) $(SOURCES) $(CFLAGS) $(LIBS) -o $(TARGET)
+
+clean:
+	rm -f $(TARGET)
+
+install: $(TARGET)
+	@echo "Image Processing GUI compiled successfully!"
+	@echo "Run with: ./$(TARGET)"
+
+test: $(TARGET)
+	@echo "Testing GUI application..."
+	./$(TARGET) &
+
+.PHONY: all clean install test

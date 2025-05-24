@@ -72,13 +72,20 @@ t_bmp8 *bmp8_loadImage(const char *filename) {
         return NULL;
     }
 
-    // Read pixel data
-    if (fread(img->data, 1, img->dataSize, file) != img->dataSize) {
-        fprintf(stderr, "Error reading pixel data.\n");
-        free(img->data);
-        free(img);
-        fclose(file);
-        return NULL;
+    // Read pixel data (BMP files store pixels bottom-up, so we need to handle this)
+    int padding = (4 - (img->width % 4)) % 4;
+    for (int y = 0; y < img->height; y++) {
+        // Calculate the actual row in the BMP file (bottom-up storage)
+        int bmp_row = img->height - 1 - y;
+        fseek(file, 54 + 1024 + bmp_row * (img->width + padding), SEEK_SET);
+        
+        if (fread(&img->data[y * img->width], 1, img->width, file) != img->width) {
+            fprintf(stderr, "Error reading pixel data.\n");
+            free(img->data);
+            free(img);
+            fclose(file);
+            return NULL;
+        }
     }
 
     fclose(file);
