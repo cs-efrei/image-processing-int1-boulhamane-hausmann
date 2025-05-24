@@ -33,6 +33,7 @@ This project is a C image processing terminal based programmed focused on BMP im
 
 ## How to Use
 
+### Terminal Version
 1. **Build the Project**
 - Use GCC or your preferred C compiler to build the project.
     - Example with GCC:
@@ -48,12 +49,27 @@ This project is a C image processing terminal based programmed focused on BMP im
      - Save the processed image
      - View image information
 
+### GUI Version
+1. **Build the GUI Project**
+   - Install GTK+ development libraries (e.g., `sudo apt-get install libgtk-3-dev` on Ubuntu)
+   - Compile with GTK+ flags:
+     ```
+     gcc main_gui.c bmp8.c bmp24.c equalize8.c equalize24.c -o image_processor_gui `pkg-config --cflags --libs gtk+-3.0` -lm
+     ```
+
+2. **Run the GUI Program**
+   - Launch the GUI executable: `./image_processor_gui`
+   - Use the graphical interface to:
+     - Open BMP images via File menu
+     - Apply filters via Filters menu
+     - Save processed images
 
 ---
 
 ## File Structure
 
-- `main.c` / `main.c` (in subfolders): Main menu and user interface
+- `main.c`: Terminal-based main menu and user interface
+- `main_gui.c`: GUI-based main application using GTK+
 - `bmp8.c` / `bmp8.h`: 8-bit BMP image handling and filters
 - `bmp24.c` / `bmp24.h`: 24-bit BMP image handling and filters
 - `equalize8.c` / `equalize8.h`: Histogram equalization for grayscale images
