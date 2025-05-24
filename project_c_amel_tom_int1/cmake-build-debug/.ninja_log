@@ -1,0 +1,10 @@
+# ninja log v6
+2	44	1748099028890995922	build.ninja	1163a7cf3f039e5f
+3	211	1748096281200830526	CMakeFiles/untitled.dir/bmp8.c.o	d2b745b8078ea970
+2	212	1748096281200669524	CMakeFiles/untitled.dir/main.c.o	96c3c761a1a302de
+1	515	1748094081765710858	CMakeFiles/untitled.dir/main.cpp.o	411eeeae795e883d
+214	331	1748096281412627593	untitled	8ceb7ad01b4a3f6a
+3	212	1748096281201047737	CMakeFiles/untitled.dir/equalize8.c.o	5aa9c25d7319e2fc
+3	212	1748096281201144905	CMakeFiles/untitled.dir/equalize24.c.o	f5ebde6743ca2154
+3	214	1748096281200939777	CMakeFiles/untitled.dir/bmp24.c.o	be3a203bde7982c8
+1	39	1748099028890995922	build.ninja	1163a7cf3f039e5f
