@@ -1,6 +1,17 @@
 #ifndef BMP8_H
 #define BMP8_H
 
+// -------------------- HEADER ---------------------------
+//  Name : bmp8.c
+//  Goal : handle all prototypes and structures related to 8-bit images (loading, debugging, filters, informations...)
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
+
+
 #include <stdint.h>
 
 // Define the t_bmp8 structure

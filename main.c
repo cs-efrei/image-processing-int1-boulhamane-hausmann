@@ -6,7 +6,19 @@
 #include "equalize8.h"
 #include "equalize24.h"
 
-// This serves as detection for the bit depth of the images
+// -------------------- HEADER ---------------------------
+//  Name : main.c
+//  Goal : main program interface for image processing with user menu and filter selection
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
+// This is used as detection for the bit depth of the images
+/// @brief Detects bit depth of BMP image file by reading header information.
+/// @param filename Path to the BMP file to analyze.
+/// @return Bit depth (8 or 24) if supported, -1 if unsupported or error.
 int detectBitDepth(const char *filename) {
     FILE *f = fopen(filename, "rb");
     if (!f) return -1;
@@ -19,7 +31,9 @@ int detectBitDepth(const char *filename) {
 }
 
 
-// This serves as the Filter menu for every 8 bit related images
+// This is used for the Filter menu for every 8 bit related images
+/// @brief Shows filter menu and applies selected filters to 8-bit grayscale images.
+/// @param img Pointer to 8-bit BMP image to apply filters to.
 void applyFilters8(t_bmp8 *img) {
     int choice;
     while (1) {
@@ -127,7 +141,9 @@ void applyFilters8(t_bmp8 *img) {
 
 
 
-// This serves as the Filter menu for every 24 bit related images
+// This is used for the Filter menu for every 24 bit related images
+/// @brief Shows filter menu and applies selected filters to 24-bit color images.
+/// @param img Pointer to 24-bit BMP image to apply filters to.
 void applyFilters24(t_bmp24 *img) {
     int choice;
     while (1) {
@@ -200,7 +216,9 @@ void applyFilters24(t_bmp24 *img) {
 
 
 
-// This serves as the main function for out program
+// This serves as the main function for our program
+/// @brief Main program entry point with user interface for image processing operations.
+/// @return 0 on successful program completion.
 int main(void) {
     char filepath[256];
     int choice;

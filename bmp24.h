@@ -3,6 +3,18 @@
 
 #include <stdint.h>
 
+
+// -------------------- HEADER ---------------------------
+//  Name : bmp24.c
+//  Goal : handle all prototypes and structures related to 24-bit images (loading, debugging, filters, informations...)
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
+
+
 // Structure for BMP header
 typedef struct {
     uint16_t type;

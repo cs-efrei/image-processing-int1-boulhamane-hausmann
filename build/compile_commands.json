@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14   -g -std=gnu99 -arch arm64 -o CMakeFiles/untitled.dir/main.c.o -c /Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/main.c",
+  "file": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/main.c",
+  "output": "CMakeFiles/untitled.dir/main.c.o"
+},
+{
+  "directory": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14   -g -std=gnu99 -arch arm64 -o CMakeFiles/untitled.dir/bmp8.c.o -c /Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/bmp8.c",
+  "file": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/bmp8.c",
+  "output": "CMakeFiles/untitled.dir/bmp8.c.o"
+},
+{
+  "directory": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14   -g -std=gnu99 -arch arm64 -o CMakeFiles/untitled.dir/bmp24.c.o -c /Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/bmp24.c",
+  "file": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/bmp24.c",
+  "output": "CMakeFiles/untitled.dir/bmp24.c.o"
+},
+{
+  "directory": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14   -g -std=gnu99 -arch arm64 -o CMakeFiles/untitled.dir/equalize8.c.o -c /Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/equalize8.c",
+  "file": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/equalize8.c",
+  "output": "CMakeFiles/untitled.dir/equalize8.c.o"
+},
+{
+  "directory": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14   -g -std=gnu99 -arch arm64 -o CMakeFiles/untitled.dir/equalize24.c.o -c /Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/equalize24.c",
+  "file": "/Users/tomhausmann/Desktop/image-processing-int1-boulhamane-hausmann/equalize24.c",
+  "output": "CMakeFiles/untitled.dir/equalize24.c.o"
+}
+]

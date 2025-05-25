@@ -3,7 +3,20 @@
 #include <math.h>
 #include <stdio.h>
 
+// -------------------- HEADER ---------------------------
+//  Name : equalize8.c
+//  Goal : handle histogram equalization functions for 8-bit grayscale images
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
 // Step 1: This will help us compute the histogram of grayscale immages
+/// @brief Computes the histogram of grayscale values for an 8-bit image.
+/// @param img Pointer to the 8-bit BMP image structure.
+/// @return Pointer to histogram array with 256 elements, or NULL on error.
+
 unsigned int *bmp8_computeHistogram(t_bmp8 *img) {
     if (!img || !img->data) return NULL;
 
@@ -18,6 +31,10 @@ unsigned int *bmp8_computeHistogram(t_bmp8 *img) {
 }
 
 // Step 2: This will help us compute the CDF
+/// @brief Computes cumulative distribution function from histogram and normalizes it.
+/// @param hist Histogram array with frequency of each grayscale value.
+/// @param total_pixels Total number of pixels in the image.
+/// @return Pointer to normalized CDF array, or NULL on error.
 unsigned int *bmp8_computeCDF(unsigned int *hist, unsigned int total_pixels) {
     if (!hist || total_pixels == 0) return NULL;
 
@@ -47,6 +64,8 @@ unsigned int *bmp8_computeCDF(unsigned int *hist, unsigned int total_pixels) {
 }
 
 // Step 3: Applying the equalization to the chosen image
+/// @brief Applies histogram equalization to enhance contrast in grayscale image.
+/// @param img Pointer to 8-bit BMP image to equalize.
 void bmp8_equalize(t_bmp8 *img) {
     if (!img || !img->data) return;
 

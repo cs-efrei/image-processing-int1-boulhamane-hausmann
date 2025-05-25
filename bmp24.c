@@ -4,6 +4,16 @@
 #include <math.h>
 
 
+
+// -------------------- HEADER ---------------------------
+//  Name : bmp24.c
+//  Goal : handle all prototypes and structures related to 24-bit images (loading, debugging, filters, informations...)
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
 t_pixel **bmp24_allocateDataPixels(int width, int height) {
     t_pixel **pixels = (t_pixel **)malloc(height * sizeof(t_pixel *));
     if (!pixels) {
@@ -25,6 +35,12 @@ t_pixel **bmp24_allocateDataPixels(int width, int height) {
     return pixels;
 }
 
+
+/// @brief Frees the memory allocated for a 2D array of t_pixel structures representing image pixels.
+/// @param pixels A pointer to the 2D array of t_pixel pointers to be free
+/// @param height The number of rows in the 2D pixel array (image height).
+
+
 void bmp24_freeDataPixels(t_pixel **pixels, int height) {
     if (!pixels) return;
     for (int i = 0; i < height; i++) {
@@ -32,6 +48,20 @@ void bmp24_freeDataPixels(t_pixel **pixels, int height) {
     }
     free(pixels);
 }
+
+
+
+
+
+/// @brief fThis function allocates memory for a t_bmp24 structure and its associated pixel data. It initializes
+/// the width, height, and colorDepth fields, and allocates memory for the pixel data using bmp24_allocateDataPixels.
+/// If any allocation fails, it returns NULL.
+/// 
+/// @param width The width of the image in pixels.
+/// @param height The height of the image in pixels.
+/// @param colorDepth The color depth of the image (e.g., 24 for 24-bit color).
+/// @return A pointer to the allocated t_bmp24 structure on success, or NULL if memory allocation fails.
+
 
 t_bmp24 *bmp24_allocate(int width, int height, int colorDepth) {
     t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24));
@@ -53,6 +83,8 @@ t_bmp24 *bmp24_allocate(int width, int height, int colorDepth) {
     return img;
 }
 
+/// @brief Frees memory allocated for a BMP image structure and its pixel data.
+/// @param img Pointer to the BMP image structure to free.
 void bmp24_free(t_bmp24 *img) {
     if (!img) return;
     bmp24_freeDataPixels(img->data, img->height);
@@ -61,6 +93,9 @@ void bmp24_free(t_bmp24 *img) {
 
 
 
+/// @brief Loads a 24-bit BMP image from file into memory.
+/// @param filename Path to the BMP file to load.
+/// @return Pointer to loaded image structure, or NULL if loading fails.
 t_bmp24 *bmp24_loadImage(const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
@@ -150,6 +185,10 @@ t_bmp24 *bmp24_loadImage(const char *filename) {
     return img;
 }
 
+/// @brief Applies a convolution filter to the entire image using given kernel.
+/// @param img Image to apply filter to.
+/// @param kernel Filter kernel values as 1D array.
+/// @param kernelSize Size of the square kernel (e.g., 3 for 3x3).
 void bmp24_applyFilter(t_bmp24 *img, float *kernel, int kernelSize) {
     if (!img || !img->data || !kernel) return;
 
@@ -238,6 +277,8 @@ int bmp24_saveImage(const char *filename, t_bmp24 *img){
 
 
 
+/// @brief Inverts all pixel colors to create negative effect.
+/// @param img Image to apply negative filter to.
 void bmp24_negative(t_bmp24 *img) {
     if (!img) return;
 
@@ -256,6 +297,8 @@ void bmp24_negative(t_bmp24 *img) {
     }
 }
 
+/// @brief Converts image to grayscale using averaging method.
+/// @param img Image to convert to grayscale.
 void bmp24_grayscale(t_bmp24 *img) {
     if (!img) return;
 
@@ -274,6 +317,9 @@ void bmp24_grayscale(t_bmp24 *img) {
            img->data[0][0].blue);
 }
 
+/// @brief Adjusts image brightness by adding value to all color channels.
+/// @param img Image to adjust brightness.
+/// @param value Brightness adjustment value (positive brightens, negative darkens).
 void bmp24_brightness(t_bmp24 *img, int value) {
     if (!img) return;
 
@@ -291,6 +337,8 @@ void bmp24_brightness(t_bmp24 *img, int value) {
     }
 }
 
+/// @brief Applies box blur filter using 3x3 averaging kernel.
+/// @param img Image to blur.
 void bmp24_boxBlur(t_bmp24 *img) {
     if (!img) return;
 
@@ -328,8 +376,8 @@ void bmp24_boxBlur(t_bmp24 *img) {
     bmp24_free(copy);
 }
 
-
-
+/// @brief Applies Gaussian blur filter for smoother blurring effect.
+/// @param img Image to apply Gaussian blur to.
 void bmp24_gaussianBlur(t_bmp24 *img) {
     if (!img) return;
 
@@ -357,6 +405,8 @@ void bmp24_gaussianBlur(t_bmp24 *img) {
     bmp24_free(copy);
 }
 
+/// @brief Detects and highlights edges in the image using outline kernel.
+/// @param img Image to apply outline filter to.
 void bmp24_outline(t_bmp24 *img) {
     if (!img) return;
 
@@ -384,6 +434,8 @@ void bmp24_outline(t_bmp24 *img) {
     bmp24_free(copy);
 }
 
+/// @brief Creates embossed effect that gives 3D appearance to image.
+/// @param img Image to apply emboss effect to.
 void bmp24_emboss(t_bmp24 *img) {
     if (!img) return;
 
@@ -411,6 +463,8 @@ void bmp24_emboss(t_bmp24 *img) {
     bmp24_free(copy);
 }
 
+/// @brief Sharpens image by enhancing edge details and contrast.
+/// @param img Image to sharpen.
 void bmp24_sharpen(t_bmp24 *img) {
     if (!img) return;
 
@@ -438,6 +492,13 @@ void bmp24_sharpen(t_bmp24 *img) {
     bmp24_free(copy);
 }
 
+/// @brief Performs convolution operation on single pixel using given kernel.
+/// @param img Source image for convolution.
+/// @param x X coordinate of pixel to process.
+/// @param y Y coordinate of pixel to process.
+/// @param kernel Convolution kernel values.
+/// @param kernelSize Size of square kernel.
+/// @return Resulting pixel after convolution operation.
 t_pixel bmp24_convolution(t_bmp24 *img, int x, int y, float *kernel, int kernelSize) {
     int n = kernelSize / 2;
     float r = 0, g = 0, b = 0;

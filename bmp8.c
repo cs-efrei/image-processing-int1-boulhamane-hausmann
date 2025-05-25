@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+// -------------------- HEADER ---------------------------
+//  Name : bmp8.c
+//  Goal : handle all functions related to 8-bit images (loading, debugging, filters, informations...)
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
+
+
+/// @brief This function must load the image with a pointer to the filename, while checking if it is valid (depth, headers, etc...)
+/// @param filename 
+/// @return An error if the file can't be open, else, the dynamically attribute memory for the image data.
+
+
 t_bmp8 *bmp8_loadImage(const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
@@ -87,6 +104,9 @@ t_bmp8 *bmp8_loadImage(const char *filename) {
 
 
 
+/// @brief This function allow the user to save the image, with error handling 
+/// @param filename @param img
+/// @return An error if the file can't be open, else it writes the file directly.
 
 int bmp8_saveImage(const char *filename, t_bmp8 *img) {
     FILE *file = fopen(filename, "wb");
@@ -121,6 +141,10 @@ int bmp8_saveImage(const char *filename, t_bmp8 *img) {
 }
 
 
+/// @brief This function free the allocated memory for an image
+/// @param img 
+/// @return VOID
+
 void bmp8_free(t_bmp8 *img) {
     if (img) {
         if (img->data) {
@@ -129,6 +153,11 @@ void bmp8_free(t_bmp8 *img) {
         free(img);
     }
 }
+
+
+/// @brief This function prints out all the informations of a previously loaded image, using the structure
+/// @param img 
+/// @return VOID
 
 
 void bmp8_printInfo(t_bmp8 *img) {
@@ -142,6 +171,9 @@ void bmp8_printInfo(t_bmp8 *img) {
 }
 
 
+/// @brief This function apply the negative filter, by applying 255 - current value to each pixel
+/// @param img 
+/// @return VOID
 void bmp8_negative(t_bmp8 *img) {
     if (img && img->data) {
         for (unsigned int i = 0; i < img->dataSize; i++) {
@@ -149,6 +181,12 @@ void bmp8_negative(t_bmp8 *img) {
         }
     }
 }
+
+
+
+/// @brief Adjusts the brightness of an 8-bit BMP image. It decrease it or increases it by adding the value given to each pixel.
+/// @param img, @param value 
+/// @return VOID
 
 
 void bmp8_brightness(t_bmp8 *img, int value) {
@@ -164,6 +202,12 @@ void bmp8_brightness(t_bmp8 *img, int value) {
         }
     }
 }
+/// @brief This converts a grayscale image to a binary (black and white) image based on the given threshold. If the treshold is 100 and a pixel has value = 80, it become 0.
+/// If it has 120 as value, it becomes 255
+/// @param img, @param treshold 
+/// @return VOID
+
+
 
 
 void bmp8_threshold(t_bmp8 *img, int threshold) {
@@ -173,6 +217,15 @@ void bmp8_threshold(t_bmp8 *img, int threshold) {
         }
     }
 }
+
+
+
+
+///@brief This function apply the specified filter to the input data.
+
+///@param input Pointer to the input data to be filtered.
+///@param filter_params Structure containing filter configuration parameters.
+///@return The result of applying the filter to the input data.
 
 
 void bmp8_applyFilter(t_bmp8 *img, float **kernel, int kernelSize) {

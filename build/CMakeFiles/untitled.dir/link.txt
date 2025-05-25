@@ -1,0 +1,1 @@
+/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14 -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/untitled.dir/main.c.o CMakeFiles/untitled.dir/bmp8.c.o CMakeFiles/untitled.dir/bmp24.c.o CMakeFiles/untitled.dir/equalize8.c.o CMakeFiles/untitled.dir/equalize24.c.o -o untitled

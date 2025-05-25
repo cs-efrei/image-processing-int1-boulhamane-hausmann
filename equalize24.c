@@ -3,7 +3,23 @@
 #include <stdlib.h>
 #include <math.h>
 
+// -------------------- HEADER ---------------------------
+//  Name : equalize24.c
+//  Goal : handle histogram equalization functions for 24-bit color images using YUV color space
+//  Authors : Amel Boulhamane and Tom Hausmann
+// 
+/// NOTE : Throughout the files, we use the @brief, @param and @return structure for more consistency in the comments 
+//
+// --------------------------------------------------------
+
 // Converter from RGB to YUV
+/// @brief Converts RGB color values to YUV color space.
+/// @param R Red component (0-255).
+/// @param G Green component (0-255).
+/// @param B Blue component (0-255).
+/// @param Y Pointer to store luminance component.
+/// @param U Pointer to store U  component.
+/// @param V Pointer to store V  component.
 static void rgb2yuv(uint8_t R, uint8_t G, uint8_t B,
                     float *Y, float *U, float *V)
 {
@@ -13,6 +29,13 @@ static void rgb2yuv(uint8_t R, uint8_t G, uint8_t B,
 }
 
 // Inverse conversion
+/// @brief Converts YUV color values back to RGB color space.
+/// @param Y Luminance component.
+/// @param U U  component.
+/// @param V V  component.
+/// @param R Pointer to store red component (0-255).
+/// @param G Pointer to store green component (0-255).
+/// @param B Pointer to store blue component (0-255).
 static void yuv2rgb(float Y, float U, float V,
                     uint8_t *R, uint8_t *G, uint8_t *B)
 {
@@ -25,6 +48,8 @@ static void yuv2rgb(float Y, float U, float V,
     *B = (uint8_t)(b < 0 ? 0 : (b > 255 ? 255 : b));
 }
 
+/// @brief Applies histogram equalization to 24-bit color image using YUV color space.
+/// @param img Pointer to 24-bit BMP image to equalize.
 void bmp24_equalize(t_bmp24 *img) {
     if (!img || !img->data) return;
 
