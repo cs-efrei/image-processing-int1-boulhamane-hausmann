@@ -2,21 +2,6 @@
 
 **Authors:** Tom Hausmann & Amel Boulhamane
 
----
-
-## 🚀 Quick Start (GUI)
-
-```bash
-# Build and launch the GUI application
-make -f Makefile.gui && ./image_gui
-```
-
-Or use the demo script:
-```bash
-./demo_gui.sh
-```
-
----
 
 ## Overview
 
