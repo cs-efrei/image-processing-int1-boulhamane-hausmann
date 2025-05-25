@@ -23,7 +23,8 @@ int detectBitDepth(const char *filename) {
 void applyFilters8(t_bmp8 *img) {
     int choice;
     while (1) {
-        printf("\nChoose a filter to apply:\n");
+    
+        printf("\nChoose a filter to apply:\n \n");
         printf("1. Negative\n");
         printf("2. Brightness\n");
         printf("3. Black and white (threshold)\n");
@@ -33,7 +34,7 @@ void applyFilters8(t_bmp8 *img) {
         printf("7. Emboss\n");
         printf("8. Sharpen\n");
         printf("9. Histogram Equalization\n");
-        printf("10. Return to main menu\n");
+        printf("10. Return to main menu\n \n");
         printf(">>> Your choice: ");
         scanf("%d", &choice);
         getchar();
@@ -207,14 +208,33 @@ int main(void) {
 
     t_bmp8 *img8 = NULL;
     t_bmp24 *img24 = NULL;
-
+    printf("\n");
+    printf("    _                   _                                                \n");
+    printf("   / \\   _ __ ___   ___| |                                               \n");
+    printf("  / _ \\ | '_ ` _ \\ / _ \\ |                                               \n");
+    printf(" / ___ \\| | | | | |  __/ |                                               \n");
+    printf("/_/   \\_\\_| |_| |_|\\___|_|                                               \n");
+    printf("| __ )  ___  _   _| | |__   __ _ _ __ ___   __ _ _ __   ___              \n");
+    printf("|  _ \\ / _ \\| | | | | '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ / _ \\  _____      \n");
+    printf("| |_) | (_) | |_| | | | | | (_| | | | | | | (_| | | | |  __/ |_____|     \n");
+    printf("|____/ \\___/ \\__,_|_|_|_|_|\\__,_|_| |_| |_|\\__,_|_| |_|\\___|             \n");
+    printf("|_   _|__  _ __ ___   | | | | __ _ _   _ ___ _ __ ___   __ _ _ __  _ __  \n");
+    printf("  | |/ _ \\| '_ ` _ \\  | |_| |/ _` | | | / __| '_ ` _ \\ / _` | '_ \\| '_ \\ \n");
+    printf("  | | (_) | | | | | | |  _  | (_| | |_| \\__ \\ | | | | | (_| | | | | | | |\n");
+    printf("  |_|\\___/|_|_|_| |_| |_| |_|\\__,_|\\__,_|___/_| |_| |_|\\__,_|_| |_|_| |_|\n");
+    printf(" / / ___| |  _ \\ _ __ ___ (_) ___  ___| |\\ \\                             \n");
+    printf("| | |     | |_) | '__/ _ \\| |/ _ \\/ __| __| |                            \n");
+    printf("| | |___  |  __/| | | (_) | |  __/ (__| |_| |                            \n");
+    printf("| |\\____| |_|   |_|  \\___// |\\___|\\___|\\__| |                            \n");
+    printf(" \\_\\                    |__/             /_/                             \n");
+    printf("\n");
     while (1) {
-        printf("\nPlease choose an option:\n");
+        printf("\nPlease choose an option:\n \n");
         printf("1. Open an image\n");
         printf("2. Save image\n");
         printf("3. Apply a filter\n");
         printf("4. Display image information\n");
-        printf("5. Quit\n");
+        printf("5. Quit\n \n");
         printf(">>> Your choice: ");
 
         char input[10];
