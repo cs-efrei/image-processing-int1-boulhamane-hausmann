@@ -1,3 +1,3 @@
-/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/CMakeFiles/project_c_Amel_Tom.dir
-/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/boulhamaneamel/Documents/GitHub/image-processing-int1-boulhamane-hausmann/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/boulhamaneamel/CLionProjects/project_c_amel_tom_int1/cmake-build-debug/CMakeFiles/untitled.dir
+/Users/boulhamaneamel/CLionProjects/project_c_amel_tom_int1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/boulhamaneamel/CLionProjects/project_c_amel_tom_int1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

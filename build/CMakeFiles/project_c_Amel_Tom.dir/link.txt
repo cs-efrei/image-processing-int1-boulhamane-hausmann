@@ -1,1 +1,0 @@
-/opt/homebrew/bin/aarch64-apple-darwin24-gcc-14 -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/project_c_Amel_Tom.dir/main.c.o CMakeFiles/project_c_Amel_Tom.dir/bmp8.c.o -o project_c_Amel_Tom

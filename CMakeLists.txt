@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
-project(project_c_Amel_Tom C)
+project(untitled)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 
-add_executable(project_c_Amel_Tom main.c
-        bmp8.c
-        bmp8.h
-        histogram_equalization.h
-        histogram_equlization.c
-)
+add_executable(untitled main.c bmp8.c bmp24.c equalize8.c equalize24.c)
